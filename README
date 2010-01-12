@@ -1,1 +1,4 @@
 Saturn is a playground for learning how to create C modules for Lua.
+
+gcc -O2 -fpic -c -o saturn.o saturn.c
+gcc -O -shared -fpic -o saturn.so saturn.o
