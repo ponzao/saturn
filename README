@@ -1,4 +1,9 @@
 Saturn is a playground for learning how to create C modules for Lua.
 
+Compiling:
 gcc -O2 -fpic -c -o saturn.o saturn.c
 gcc -O -shared -fpic -o saturn.so saturn.o
+
+Usage in Lua:
+require("saturn")
+print(saturn.average(1, 10)) --> 5.5
