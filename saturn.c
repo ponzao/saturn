@@ -1,6 +1,7 @@
 #include <lua5.1/lua.h>
 #include <lua5.1/lauxlib.h>
 #include <lua5.1/lualib.h>
+#include <stdio.h>
 
 static int average(lua_State *L) {
     int n = lua_gettop(L);
@@ -22,8 +23,7 @@ static int fac(int n) {
 
 static int factorial(lua_State *L) {
     int n = lua_tonumber(L, -1);
-    printf("%d\n", n);
-    
+
     int result = fac(n);
     
     lua_pushnumber(L, result);
@@ -31,9 +31,22 @@ static int factorial(lua_State *L) {
     return 1;
 }
 
+static int getstring(lua_State *L) {
+    char buff[256];
+
+    puts("Enter a word: ");
+    if (scanf("%s", buff) != 1)
+        fprintf(stderr, "Something went horribly wrong!");
+    
+    lua_pushstring(L, buff);
+
+    return 1;
+}
+
 static const luaL_reg saturn[] = {
     {"average", average},
     {"factorial", factorial},
+    {"getstring", getstring},
     {NULL, NULL}
 };
 
