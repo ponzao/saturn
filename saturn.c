@@ -43,10 +43,19 @@ static int getstring(lua_State *L) {
     return 1;
 }
 
+static int n = 0;
+
+static int increment(lua_State *L) {
+    lua_pushnumber(L, ++n);
+
+    return 1;
+}
+
 static const luaL_reg saturn[] = {
     {"average", average},
     {"factorial", factorial},
     {"getstring", getstring},
+    {"increment", increment},
     {NULL, NULL}
 };
 
