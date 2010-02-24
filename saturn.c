@@ -2,6 +2,42 @@
 #include <lua5.1/lauxlib.h>
 #include <lua5.1/lualib.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int v;
+    struct Node *next;
+};
+
+struct List {
+    struct Node *head;
+};
+
+static struct List *list;
+
+static int new(lua_State *L) {
+    list = malloc(sizeof(struct List));
+
+    return 0;
+}
+
+static int prepend(lua_State *L) {
+    if (!list) {
+        fprintf(stderr, "You should first call new()\n");
+        return 0;
+    }
+    int v = lua_tonumber(L , -1);
+    struct Node node = malloc(sizeof(struct Node));
+    node->v = v;
+    if (!list->head) {
+        list->head = node;
+    } else {
+        node->next = list->head;
+        list->head = node;
+    }
+
+    return 1;
+}
 
 static int average(lua_State *L) {
     int n = lua_gettop(L);
@@ -56,6 +92,8 @@ static const luaL_reg saturn[] = {
     {"factorial", factorial},
     {"getstring", getstring},
     {"increment", increment},
+    {"new", new},
+    {"prepend", prepend},
     {NULL, NULL}
 };
 
