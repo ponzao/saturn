@@ -27,7 +27,7 @@ static int prepend(lua_State *L) {
         return 0;
     }
     int v = lua_tonumber(L , -1);
-    struct Node node = malloc(sizeof(struct Node));
+    struct Node *node = malloc(sizeof(struct Node));
     node->v = v;
     if (!list->head) {
         list->head = node;
