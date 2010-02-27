@@ -16,7 +16,7 @@ struct Stack {
 static struct Stack *stack;
 
 static int new(lua_State *L) {
-    stack = malloc(sizeof(struct stack));
+    stack = malloc(sizeof(struct Stack));
 
     return 0;
 }
@@ -50,10 +50,11 @@ static int pop(lua_State *L) {
         return 0;
     }
     struct Node *tmp = stack->head;
-    int result = tmp->value;
+    int result = tmp->v;
     stack->head = stack->head->next;
     free(tmp);
     tmp = NULL;
+    lua_pushnumber(L, result);
 
     return 1;
 }
