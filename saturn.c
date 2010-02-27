@@ -9,43 +9,61 @@ struct Node {
     struct Node *next;
 };
 
-struct List {
+struct Stack {
     struct Node *head;
 };
 
-static struct List *list;
+static struct Stack *stack;
 
 static int new(lua_State *L) {
-    list = malloc(sizeof(struct List));
+    stack = malloc(sizeof(struct stack));
 
     return 0;
 }
 
-static int prepend(lua_State *L) {
-    if (!list) {
-        fprintf(stderr, "You should first call new()\n");
+static int push(lua_State *L) {
+    if (!stack) {
+        fprintf(stderr, "You should first call new().\n");
         return 0;
     }
     int v = lua_tonumber(L , -1);
     struct Node *node = malloc(sizeof(struct Node));
     node->v = v;
     node->next = NULL;
-    if (!list->head) {
-        list->head = node;
+    if (!stack->head) {
+        stack->head = node;
     } else {
-        node->next = list->head;
-        list->head = node;
+        node->next = stack->head;
+        stack->head = node;
     }
 
     return 0;
 }
 
+static int pop(lua_State *L) {
+    if (!stack) {
+        fprintf(stderr, "Stack is null.\n");
+        return 0;
+    }
+    if (!stack->head) {
+        fprintf(stderr, "Stack is empty.\n");
+        return 0;
+    }
+    struct Node *tmp = stack->head;
+    int result = tmp->value;
+    stack->head = stack->head->next;
+    free(tmp);
+    tmp = NULL;
+
+    return 1;
+}
+
 static int show(lua_State *L) {
-    if (!list) {
+    if (!stack) {
         fprintf(stderr, "You should first call new()\n");
         return 0;
     }
-    struct Node *current = list->head;
+    struct Node *current = stack->head;
     printf("Iterating from head to tail...\n");
     while (current) {
         fprintf(stdout, "%d\n", current->v);
@@ -56,10 +74,11 @@ static int show(lua_State *L) {
 }
 
 static const luaL_reg saturn[] = {
-    { "new",     new     },
-    { "prepend", prepend },
-    { "show",    show    },
-    { NULL,      NULL    }
+    { "new",  new  },
+    { "push", push },
+    { "pop",  pop },
+    { "show", show },
+    { NULL,   NULL }
 };
 
 LUALIB_API int luaopen_saturn(lua_State *L) {
