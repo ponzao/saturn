@@ -15,7 +15,7 @@ struct Stack {
 
 static struct Stack *stack;
 
-static int new(lua_State *L) {
+static int initialize(lua_State *L) {
     stack = malloc(sizeof(struct Stack));
 
     return 0;
@@ -23,7 +23,7 @@ static int new(lua_State *L) {
 
 static int push(lua_State *L) {
     if (!stack) {
-        fprintf(stderr, "You should first call new().\n");
+        fprintf(stderr, "You should first call initialize().\n");
         return 0;
     }
     int v = lua_tonumber(L , -1);
@@ -59,13 +59,30 @@ static int pop(lua_State *L) {
     return 1;
 }
 
-static int show(lua_State *L) {
+static int destroy(lua_State *L) {
     if (!stack) {
-        fprintf(stderr, "You should first call new()\n");
+        fprintf(stderr, "Stack is null.\n");
         return 0;
     }
     struct Node *current = stack->head;
-    printf("Iterating from head to tail...\n");
+    while (current) {
+        struct Node *next = current->next;
+        free(stack->head);
+        stack->head = current;
+    }
+    free(stack);
+    stack = NULL;
+
+    return 0;
+}
+
+static int show(lua_State *L) {
+    if (!stack) {
+        fprintf(stderr, "You should first call initialize()\n");
+        return 0;
+    }
+    struct Node *current = stack->head;
+    printf("Iterating from top to bottom...\n");
     while (current) {
         fprintf(stdout, "%d\n", current->v);
         current = current->next;
@@ -75,7 +92,8 @@ static int show(lua_State *L) {
 }
 
 static const luaL_reg saturn[] = {
-    { "new",  new  },
+    { "initialize",  initialize  },
+    { "destroy",  destroy },
     { "push", push },
     { "pop",  pop },
     { "show", show },
