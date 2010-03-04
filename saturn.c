@@ -59,6 +59,21 @@ static int pop(lua_State *L) {
     return 1;
 }
 
+static int peek(lua_State *L) {
+    if (!stack) {
+        fprintf(stderr, "Stack is null.\n");
+        return 0;
+    }
+    if (!stack->head) {
+        fprintf(stderr, "Stack is empty.\n");
+        return 0;
+    }
+
+    lua_pushnumber(L, stack->head->v);
+
+    return 1;
+}
+
 static int destroy(lua_State *L) {
     if (!stack) {
         fprintf(stderr, "Stack is null.\n");
@@ -92,12 +107,13 @@ static int show(lua_State *L) {
 }
 
 static const luaL_reg saturn[] = {
-    { "initialize",  initialize  },
-    { "destroy",  destroy },
-    { "push", push },
-    { "pop",  pop },
-    { "show", show },
-    { NULL,   NULL }
+    { "initialize", initialize },
+    { "destroy",    destroy    },
+    { "push",       push       },
+    { "pop",        pop        },
+    { "peek",       peek       },
+    { "show",       show       },
+    { NULL,         NULL       }
 };
 
 LUALIB_API int luaopen_saturn(lua_State *L) {
