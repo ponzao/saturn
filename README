@@ -5,5 +5,14 @@ gcc -O2 -fpic -c -o saturn.o saturn.c
 gcc -O -shared -fpic -o saturn.so saturn.o
 
 Usage in Lua:
-require("saturn")
-print(saturn.average(1, 10)) --> 5.5
+> require("saturn")
+> saturn.initialize()
+> saturn.push(10)
+> print(saturn.pop())
+10
+> saturn.push(12)
+> saturn.push(14)
+> print(saturn.peek())
+14
+> saturn.destroy()
+
